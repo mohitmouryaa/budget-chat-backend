@@ -22,7 +22,7 @@ const port = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:3001",
   }),
 );
 
@@ -34,11 +34,13 @@ app.use(express.json({ limit: "10kb" }));
 
 // ROUTES IMPORTS
 const userRouter = require("./routes/user.route");
-const assetRouter = require("./routes/assets.route");
+const commandRouter = require("./routes/command.route");
+const categoriesRouter = require("./routes/categories.route");
 
 // ROUTES
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/assets", assetRouter);
+app.use("/api/v1/commands", commandRouter);
+app.use("/api/v1/categories", categoriesRouter);
 
 app.get("/", (req, res) => {
   res.send("HELLO");

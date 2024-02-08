@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-const authController = require("./../controllers/auth.controller");
+const { createAssetCategories } = require("../controllers/categories.controller");
 
-router.route("/auth/google/callback").post(authController.googleAuth);
+router.route("/assetCategories").post(createAssetCategories);
 router.route("/").get((req, res) => res.send("HELLO"));
 
 module.exports = router;
