@@ -36,11 +36,13 @@ app.use(express.json({ limit: "10kb" }));
 const userRouter = require("./routes/user.route");
 const commandRouter = require("./routes/command.route");
 const categoriesRouter = require("./routes/categories.route");
+const chatsRouter = require("./routes/chat.route");
 
 // ROUTES
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/commands", commandRouter);
 app.use("/api/v1/categories", categoriesRouter);
+app.use("/api/v1/chats", chatsRouter);
 
 app.get("/", (req, res) => {
   res.send("HELLO");

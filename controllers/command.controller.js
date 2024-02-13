@@ -1,9 +1,25 @@
+const axios = require("axios");
 const catchAsync = require("../utils/catchAsync");
 const { commands } = require("../utils/commandsData");
 const { getAssetsCategories } = require("./categories.controller");
 
 exports.runCommand = catchAsync(async (req, res, next) => {
   const { command } = req.body;
+
+  const response = await axios.post(`${process.env.URL}/api/v1/chats`, {
+    userId: "65c1d927921def8a69892609",
+    messages: [
+      {
+        type: "command",
+        message: {
+          text: command,
+          date: Date.now(),
+        },
+        by: "user",
+      },
+    ],
+  });
+
   let data = [];
   if (commands[command]?.type === "list") {
     data = [...commands[command].options];
@@ -27,6 +43,7 @@ exports.runCommand = catchAsync(async (req, res, next) => {
     status: "success",
     command,
     type: commands[command]?.type,
-    commandList:data,
+    commandList: data,
+    chat: response.data.chat,
   });
 });

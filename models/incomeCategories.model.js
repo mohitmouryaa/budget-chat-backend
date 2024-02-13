@@ -12,7 +12,7 @@ const incomeCategoriesSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
-      default: mongoose.Types.ObjectId("65b8da1f7524e11b2a87873e"),
+      default: mongoose.Types.ObjectId("65c1d927921def8a69892609"),
     },
     slug: {
       type: String,
