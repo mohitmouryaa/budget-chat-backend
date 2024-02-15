@@ -1,6 +1,5 @@
 const Chat = require("../models/chat.model");
 const catchAsync = require("../utils/catchAsync");
-const APIFeatures = require("./../utils/apiFeatures");
 const mongoose = require("mongoose");
 
 exports.createChat = catchAsync(async (req, res, next) => {
@@ -13,7 +12,7 @@ exports.createChat = catchAsync(async (req, res, next) => {
 
 exports.updateChat = catchAsync(async (req, res, next) => {
   const filter = { userId: "65c1d927921def8a69892609" };
-  const update = { $unshift: { messages: req.body.message } };
+  const update = { $push: { messages: { $each: [req.body.message], $position: 0 } } };
 
   const updatedChat = await Chat.findOneAndUpdate(filter, update, {
     new: true,
@@ -53,7 +52,7 @@ exports.getUserChat = catchAsync(async (req, res, next) => {
     {
       $project: {
         _id: 1,
-        messages: "$messages",
+        messages: { $reverseArray: "$messages" },
         totalPages: { $ceil: { $divide: [{ $size: "$messages" }, limit] } }, // Calculate totalPages manually
       },
     },

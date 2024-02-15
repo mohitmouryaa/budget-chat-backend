@@ -28,22 +28,22 @@ const userSchema = new Schema(
       default: "user",
     },
     userPositions: { type: new Schema({ any: Schema.Types.Mixed }), default: false },
-    // password: {
-    //   type: String,
-    //   required: [true, "Please enter a password!"],
-    //   minLength: 8,
-    //   select: false,
-    // },
-    // passwordConfirm: {
-    //   type: String,
-    //   required: [true, "Please confirm your password!"],
-    //   validate: {
-    //     validator: function (el) {
-    //       return el === this.password;
-    //     },
-    //     message: "Password are not same!",
-    //   },
-    // },
+    password: {
+      type: String,
+      required: [true, "Please enter a password!"],
+      minLength: 8,
+      select: false,
+    },
+    passwordConfirm: {
+      type: String,
+      required: [true, "Please confirm your password!"],
+      validate: {
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: "Password are not same!",
+      },
+    },
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,

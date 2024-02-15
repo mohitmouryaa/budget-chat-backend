@@ -44,6 +44,6 @@ exports.runCommand = catchAsync(async (req, res, next) => {
     command,
     type: commands[command]?.type,
     commandList: data,
-    chat: response.data.chat,
+    ...(response && { chat: response.data.chat }),
   });
 });

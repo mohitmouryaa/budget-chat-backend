@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const { runCommand } = require("../controllers/command.controller");
+const { protect } = require("../controllers/auth.controller");
 
+router.use(protect);
 router.route("/runCommand").post(runCommand);
-router.route("/").get((req, res) => res.send("HELLO"));
 
 module.exports = router;
