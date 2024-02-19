@@ -1,25 +1,19 @@
-const axios = require("axios");
 const catchAsync = require("../utils/catchAsync");
 const { commands } = require("../utils/commandsData");
 const { getAssetsCategories } = require("./categories.controller");
+const { saveChat } = require("./chat.controller");
 
 exports.runCommand = catchAsync(async (req, res, next) => {
-  const { command } = req.body;
-
-  const response = await axios.post(`${process.env.URL}/api/v1/chats`, {
-    userId: "65c1d927921def8a69892609",
-    messages: [
-      {
-        type: "command",
-        message: {
-          text: command,
-          date: Date.now(),
-        },
-        by: "user",
+  const { command, type } = req.body;
+  const payload = [
+    {
+      type: type,
+      message: {
+        text: command,
       },
-    ],
-  });
-
+      by: "user",
+    },
+  ];
   let data = [];
   if (commands[command]?.type === "list") {
     data = [...commands[command].options];
@@ -39,11 +33,20 @@ exports.runCommand = catchAsync(async (req, res, next) => {
       }),
     );
   }
+  payload.unshift({
+    type: Array.isArray(data) ? "list" : commands[command] ? "command" : "message",
+    message: {
+      text: data,
+    },
+    by: "system",
+  });
+  const response = await saveChat({ userId: req.user.id, payload });
+
   res.status(200).json({
     status: "success",
     command,
     type: commands[command]?.type,
     commandList: data,
-    ...(response && { chat: response.data.chat }),
+    ...(response && { chat: response.messages.reverse() }),
   });
 });

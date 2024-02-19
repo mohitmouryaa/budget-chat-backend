@@ -90,14 +90,14 @@ userSchema.pre(/^find/, async function (next) {
 //   return await bcrypt.compare(candidatePassword, userPassword);
 // };
 
-// userSchema.methods.changesPasswordAfter = function (jwtTimestamp) {
-//   if (this.passwordChangedAt) {
-//     const changedPasswordTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
-//     return jwtTimestamp < changedPasswordTimestamp;
-//   }
-//   // False means not changed
-//   return false;
-// };
+userSchema.methods.changesPasswordAfter = function (jwtTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedPasswordTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+    return jwtTimestamp < changedPasswordTimestamp;
+  }
+  // False means not changed
+  return false;
+};
 
 // userSchema.methods.createPasswordResetToken = function () {
 //   const resetToken = crypto.randomBytes(32).toString("hex");

@@ -10,6 +10,10 @@ exports.createAssetCategories = catchAsync(async (req, res, next) => {
 });
 
 exports.getAssetsCategories = async () => {
-  const categoriesList = await AssetCategory.find({}).select("-__v");
-  return categoriesList;
+  try {
+    const categoriesList = await AssetCategory.find({}).select("-__v");
+    return categoriesList;
+  } catch (err) {
+    return [];
+  }
 };

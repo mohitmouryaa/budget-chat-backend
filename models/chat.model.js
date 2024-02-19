@@ -11,7 +11,7 @@ const chatSchema = new mongoose.Schema({
     {
       type: {
         type: String,
-        enum: ["message", "link", "command"],
+        enum: ["message", "link", "command", "list"],
         required: true,
       },
       message: {
@@ -20,7 +20,7 @@ const chatSchema = new mongoose.Schema({
       },
       by: {
         type: String,
-        enum: ["admin", "user"],
+        enum: ["system", "user"],
         required: true,
       },
     },

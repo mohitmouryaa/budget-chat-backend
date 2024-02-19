@@ -1,6 +1,7 @@
 const Chat = require("../models/chat.model");
 const catchAsync = require("../utils/catchAsync");
 const mongoose = require("mongoose");
+const { makeValueForSaveChat } = require("../utils/functions");
 
 exports.createChat = catchAsync(async (req, res, next) => {
   const newChat = await Chat.create(req.body);
@@ -11,9 +12,15 @@ exports.createChat = catchAsync(async (req, res, next) => {
 });
 
 exports.updateChat = catchAsync(async (req, res, next) => {
-  const filter = { userId: "65c1d927921def8a69892609" };
-  const update = { $push: { messages: { $each: [req.body.message], $position: 0 } } };
-
+  const filter = { userId: req.user.id };
+  const update = {
+    $push: {
+      messages: {
+        $each: [{ ...req.body, message: { ...req.body.message, date: Date.now() } }],
+        $position: 0,
+      },
+    },
+  };
   const updatedChat = await Chat.findOneAndUpdate(filter, update, {
     new: true,
     runValidators: true, // Run validators on update
@@ -24,6 +31,25 @@ exports.updateChat = catchAsync(async (req, res, next) => {
     chat: updatedChat,
   });
 });
+
+exports.saveChat = async ({ userId, payload }) => {
+  const filter = { userId };
+  const data = makeValueForSaveChat({ payload });
+  const update = {
+    $push: {
+      messages: {
+        $each: data,
+        $position: 0,
+      },
+    },
+  };
+  const updatedChat = await Chat.findOneAndUpdate(filter, update, {
+    new: true,
+    runValidators: true, // Run validators on update
+  });
+
+  return updatedChat;
+};
 
 exports.getUserChat = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;

@@ -27,7 +27,7 @@ const createAndSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: "success",
     token,
-    data: { user },
+    user,
   });
 };
 
@@ -64,12 +64,17 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
     audience: client_id,
   });
   const payload = ticket.getPayload();
-  const newUser = await User.create({
-    ...payload,
-    password: process.env.GOOGLE_AUTH_PASSWORD,
-    passwordConfirm: process.env.GOOGLE_AUTH_PASSWORD,
-  });
-  createAndSendToken(newUser, 201, res);
+  const user = await User.findOne({ email: payload.email });
+  if (user) {
+    createAndSendToken(user, 200, res);
+  } else {
+    const newUser = await User.create({
+      ...payload,
+      password: process.env.GOOGLE_AUTH_PASSWORD,
+      passwordConfirm: process.env.GOOGLE_AUTH_PASSWORD,
+    });
+    createAndSendToken(newUser, 201, res);
+  }
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -77,8 +82,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
     token = req.headers.authorization.split(" ")[1];
-  } else if (req.cookies.chatpass) {
-    token = req.cookies.chatpass;
   }
   if (!token) {
     return next(new AppError("You are not logged in! Please log in to get access.", 401));
@@ -100,6 +103,5 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser;
-  res.locals.user = currentUser;
   next();
 });
