@@ -9,10 +9,11 @@ const expenditureCategoriesSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
-    userId: {
+    user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
-      default: mongoose.Types.ObjectId("65c1d927921def8a69892609"),
+      default: new mongoose.Types.ObjectId("65c1d927921def8a69892609"),
+      required: [true, "An Expenditure Category must have a user id!"],
     },
     slug: {
       type: String,

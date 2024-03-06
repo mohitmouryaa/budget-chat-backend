@@ -3,21 +3,21 @@ const slugify = require("slugify");
 
 const { Schema } = mongoose;
 
-const assetSchema = new Schema(
+const expenditureSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "An asset must have a name!"],
+      required: [true, "An expenditure must have a name!"],
       trim: true,
       unique: true,
     },
     balance: {
       type: Number,
-      required: [true, "An asset must have a balance!"],
+      required: [true, "An expenditure must have a balance!"],
     },
     category: {
       type: Schema.ObjectId,
-      ref: "AssetCategory",
+      ref: "ExpenditureCategory",
       required: true,
     },
     slug: {
@@ -40,17 +40,17 @@ const assetSchema = new Schema(
 );
 
 // DOCUMENT MIDDLEWARE
-assetSchema.pre("save", function (next) {
+expenditureSchema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
 
 // QUERY MIDDLEWARE
-assetSchema.pre(/^find/, function (next) {
+expenditureSchema.pre(/^find/, function (next) {
   this.populate("category");
   next();
 });
 
-const Asset = mongoose.model("Asset", assetSchema);
+const Expenditure = mongoose.model("Expenditure", expenditureSchema);
 
-module.exports = Asset;
+module.exports = Expenditure;

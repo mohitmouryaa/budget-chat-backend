@@ -1,6 +1,6 @@
 const catchAsync = require("../utils/catchAsync");
 const { commands } = require("../utils/commandsData");
-const { getAssetsCategories } = require("./categories.controller");
+const { getAssetsCategories, getExpenditureCategories } = require("./categories.controller");
 const { saveChat } = require("./chat.controller");
 
 exports.runCommand = catchAsync(async (req, res, next) => {
@@ -23,7 +23,10 @@ exports.runCommand = catchAsync(async (req, res, next) => {
         if (cmd.type === "select") {
           switch (cmd.options) {
             case "assetCategoryList":
-              cmd.options = await getAssetsCategories();
+              cmd.options = await getAssetsCategories(req.user);
+              break;
+            case "expenditureCategoryList":
+              cmd.options = await getExpenditureCategories(req.user);
               break;
             default:
               break;
@@ -33,20 +36,22 @@ exports.runCommand = catchAsync(async (req, res, next) => {
       }),
     );
   }
-  payload.unshift({
-    type: Array.isArray(data) ? "list" : commands[command] ? "command" : "message",
-    message: {
-      text: data,
-    },
-    by: "system",
-  });
+  if (data?.length > 0) {
+    payload.unshift({
+      type: commands[command]?.type,
+      message: {
+        text: data,
+      },
+      by: "system",
+    });
+  }
   const response = await saveChat({ userId: req.user.id, payload });
 
   res.status(200).json({
     status: "success",
     command,
-    type: commands[command]?.type,
-    commandList: data,
-    ...(response && { chat: response.messages.reverse() }),
+    type: commands[command]?.type || "message",
+    ...(data?.length && { commandList: data }),
+    ...(response && { chat: response.messages }),
   });
 });

@@ -52,16 +52,18 @@ app.use(xss());
 // ROUTES IMPORTS
 const userRouter = require("./routes/user.route");
 const commandRouter = require("./routes/command.route");
-const categoriesRouter = require("./routes/categories.route");
 const chatsRouter = require("./routes/chat.route");
+const assetRouter = require("./routes/asset.route");
+const expenditureRouter = require("./routes/expenditure.route");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/error.controller");
 
 // ROUTES
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/commands", commandRouter);
-app.use("/api/v1/categories", categoriesRouter);
 app.use("/api/v1/chats", chatsRouter);
+app.use("/api/v1/assets", assetRouter);
+app.use("/api/v1/expenditure", expenditureRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

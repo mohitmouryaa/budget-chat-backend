@@ -9,7 +9,17 @@ exports.commands = {
       },
       {
         cmd: "/addAssetCategory",
-        label: "Add Asset Catgory",
+        label: "Add Asset Category",
+        description: "Bank Account, Cash, Stocks, FD ,....",
+      },
+      {
+        cmd: "/addExpenditure",
+        label: "Add Expenditure",
+        description: ".",
+      },
+      {
+        cmd: "/addExpenditureCategory",
+        label: "Add Expenditure Category",
         description: "Bank Account, Cash, Stocks, FD ,....",
       },
     ],
@@ -29,6 +39,42 @@ exports.commands = {
       {
         name: "amount",
         type: "number",
+      },
+    ],
+  },
+  "/addAssetCategory": {
+    type: "input",
+    options: [
+      {
+        name: "name",
+        type: "text",
+      },
+    ],
+  },
+  "/addExpenditure": {
+    type: "input",
+    options: [
+      {
+        name: "name",
+        type: "text",
+      },
+      {
+        name: "category",
+        type: "select",
+        options: "expenditureCategoryList",
+      },
+      {
+        name: "amount",
+        type: "number",
+      },
+    ],
+  },
+  "/addExpenditureCategory": {
+    type: "input",
+    options: [
+      {
+        name: "name",
+        type: "text",
       },
     ],
   },

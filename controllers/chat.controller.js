@@ -48,12 +48,12 @@ exports.saveChat = async ({ userId, payload }) => {
     runValidators: true, // Run validators on update
   });
 
-  return updatedChat;
+  return { ...updatedChat, messages: [...updatedChat.messages.reverse()] };
 };
 
 exports.getUserChat = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 1;
+  const limit = req.query.limit * 1 || 10;
   const pipeline = [
     {
       $match: { userId: { $eq: new mongoose.Types.ObjectId("65c1d927921def8a69892609") } }, // Filter by userId

@@ -11,7 +11,7 @@ const chatSchema = new mongoose.Schema({
     {
       type: {
         type: String,
-        enum: ["message", "link", "command", "list"],
+        enum: ["message", "link", "command", "list", "input"],
         required: true,
       },
       message: {
