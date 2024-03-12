@@ -3,26 +3,35 @@ const mongoose = require("mongoose");
 const transactionSchema = new mongoose.Schema({
   type: {
     type: String,
-    enum: ["Asset", "Expenditure"],
+    enum: ["Income", "Expense"],
   },
-  assetCategoryId: {
-    type: mongoose.SchemaTypes.Mixed,
-    ref: "AssetCategory",
+  user: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+    required: [true, "A chat must have a User Id"],
+  },
+  income: {
+    type: mongoose.Schema.ObjectId,
+    ref: "IncomeCategory",
     default: null,
   },
-  expenditureCategoryId: {
-    type: mongoose.SchemaTypes.Mixed,
+  expenditure: {
+    type: mongoose.Schema.ObjectId,
     ref: "ExpenditureCategory",
     default: null,
   },
-  assetId: {
+  asset: {
     type: mongoose.Schema.ObjectId,
     ref: "Asset",
-    required: [true, "Please enter a valid Asset ID"],
+    required: [true, "An transaction must have a related Asset"],
   },
   amount: {
     type: Number,
     required: [true, "Please enter an amount for the trasaction!"],
+  },
+  note: {
+    type: String,
+    default: null,
   },
 });
 

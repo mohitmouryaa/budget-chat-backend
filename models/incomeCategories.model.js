@@ -1,21 +1,14 @@
 const mongoose = require("mongoose");
-const slugify = require("slugify");
+const categorySchema = require("./category.schema");
 
-const incomeCategoriesSchema = new mongoose.Schema(
+const incomeCategory = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: [true, "An Income Catgory must have a name!"],
-      unique: true,
-      trim: true,
-    },
-    userId: {
+    categories: [categorySchema],
+    user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
-      default: mongoose.Types.ObjectId("65c1d927921def8a69892609"),
-    },
-    slug: {
-      type: String,
+      default: new mongoose.Types.ObjectId("65c1d927921def8a69892609"),
+      required: [true, "An Income Category must have a user id!"],
     },
   },
   {
@@ -28,12 +21,6 @@ const incomeCategoriesSchema = new mongoose.Schema(
   },
 );
 
-// DOCUMENT MIDDLEWARE
-incomeCategoriesSchema.pre("save", function (next) {
-  this.slug = slugify(this.name, { lower: true });
-  next();
-});
-
-const IncomeCategory = mongoose.model("IncomeCategory", incomeCategoriesSchema);
+const IncomeCategory = mongoose.model("IncomeCategory", incomeCategory);
 
 module.exports = IncomeCategory;

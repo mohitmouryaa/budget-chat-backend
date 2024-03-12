@@ -4,10 +4,12 @@ const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const process = require("node:process");
-require("dotenv").config({ path: "./.env" });
+require("dotenv").config({ path: ".env" });
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const { rateLimit } = require("express-rate-limit");
+const AppError = require("./utils/appError");
+const globalErrorHandler = require("./controllers/error.controller");
 
 // UNCAUGHT EXCEPTION HANDLER
 process.on("uncaughtException", (err) => {
@@ -18,7 +20,6 @@ process.on("uncaughtException", (err) => {
 
 // SERVER CONSTANTS
 const app = express();
-const DB = process.env.DATABASE;
 const port = process.env.PORT || 3000;
 
 // MIDDLEWARES
@@ -55,25 +56,28 @@ const commandRouter = require("./routes/command.route");
 const chatsRouter = require("./routes/chat.route");
 const assetRouter = require("./routes/asset.route");
 const expenditureRouter = require("./routes/expenditure.route");
-const AppError = require("./utils/appError");
-const globalErrorHandler = require("./controllers/error.controller");
+const incomeRouter = require("./routes/income.route");
+const transactionRouter = require("./routes/transaction.route");
 
 // ROUTES
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/commands", commandRouter);
 app.use("/api/v1/chats", chatsRouter);
 app.use("/api/v1/assets", assetRouter);
-app.use("/api/v1/expenditure", expenditureRouter);
+app.use("/api/v1/expenditures", expenditureRouter);
+app.use("/api/v1/incomes", incomeRouter);
+app.use("/api/v1/transactions", transactionRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
+// GLOBAL ERROR HANDLER
 app.use(globalErrorHandler);
 
 // DATABASE
 mongoose
-  .connect(DB)
+  .connect(process.env.DATABASE)
   .then(() => {
     console.log("DB connected successfully...");
   })
